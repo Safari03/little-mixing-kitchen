@@ -36,21 +36,63 @@
 
 /* ───────────── Make it yours ─────────────
    KID:  the name on the kitchen sign.
-   INGS: the food on the shelf. Add a line to add a food.
+   INGS: the food on the shelf, in shelf order. Add a line to add a food.
          e = picture, flesh = colour of the cut side, juice = splash colour,
-         kind = fruit | veg (decides the dish name), tex = crisp | soft | juicy (decides the chop sound). */
+         kind = fruit | veg | protein | pantry (decides the dish name),
+         tex = crisp | soft | juicy (decides the chop sound).
+         pour = liquid | powder | crack: this one is not cut. It pours (or cracks) into the bowl.
+         bag = picture printed on a drawn bag, for foods with no picture of their own.
+   SHAKERS: the seasonings beside the bell. */
 const KID = 'Enyat';
 const INGS = [
-  { id: 'strawberry', e: '🍓', flesh: '#ffb3bd', juice: '#f0385a', kind: 'fruit', tex: 'soft' },
-  { id: 'banana',     e: '🍌', flesh: '#fff6cf', juice: '#f3d96b', kind: 'fruit', tex: 'soft' },
-  { id: 'apple',      e: '🍎', flesh: '#fff4d8', juice: '#f6e2a6', kind: 'fruit', tex: 'crisp' },
-  { id: 'orange',     e: '🍊', flesh: '#ffc35c', juice: '#ff9a1f', kind: 'fruit', tex: 'juicy' },
-  { id: 'peach',      e: '🍑', flesh: '#ffd08a', juice: '#ffab5e', kind: 'fruit', tex: 'juicy' },
-  { id: 'carrot',     e: '🥕', flesh: '#ffb057', juice: '#ff8a1f', kind: 'veg',   tex: 'crisp' },
-  { id: 'cucumber',   e: '🥒', flesh: '#e2f4b8', juice: '#9fd45f', kind: 'veg',   tex: 'crisp' },
-  { id: 'tomato',     e: '🍅', flesh: '#ff8e7a', juice: '#ef3b2d', kind: 'veg',   tex: 'juicy' },
-  { id: 'broccoli',   e: '🥦', flesh: '#d8eeb0', juice: '#7fc24e', kind: 'veg',   tex: 'crisp' },
-  { id: 'corn',       e: '🌽', flesh: '#fff0a0', juice: '#ffd23f', kind: 'veg',   tex: 'crisp' },
+  { id: 'strawberry',  e: '🍓', flesh: '#ffb3bd', juice: '#f0385a', kind: 'fruit', tex: 'soft' },
+  { id: 'banana',      e: '🍌', flesh: '#fff6cf', juice: '#f3d96b', kind: 'fruit', tex: 'soft' },
+  { id: 'apple',       e: '🍎', flesh: '#fff4d8', juice: '#f6e2a6', kind: 'fruit', tex: 'crisp' },
+  { id: 'orange',      e: '🍊', flesh: '#ffc35c', juice: '#ff9a1f', kind: 'fruit', tex: 'juicy' },
+  { id: 'peach',       e: '🍑', flesh: '#ffd08a', juice: '#ffab5e', kind: 'fruit', tex: 'juicy' },
+  { id: 'grapes',      e: '🍇', flesh: '#d9c2f0', juice: '#8e5bc4', kind: 'fruit', tex: 'juicy' },
+  { id: 'watermelon',  e: '🍉', flesh: '#ff7f8f', juice: '#f0455c', kind: 'fruit', tex: 'juicy' },
+  { id: 'pineapple',   e: '🍍', flesh: '#ffe680', juice: '#ffd23f', kind: 'fruit', tex: 'juicy' },
+  { id: 'blueberries', e: '🫐', flesh: '#b9c4f2', juice: '#5a6fd0', kind: 'fruit', tex: 'soft' },
+  { id: 'lemon',       e: '🍋', flesh: '#fff7b0', juice: '#ffe14d', kind: 'fruit', tex: 'juicy' },
+  { id: 'mango',       e: '🥭', flesh: '#ffc94a', juice: '#ffa41f', kind: 'fruit', tex: 'soft' },
+  { id: 'pear',        e: '🍐', flesh: '#fbf7d5', juice: '#cfe07a', kind: 'fruit', tex: 'crisp' },
+  { id: 'cherries',    e: '🍒', flesh: '#ff9aa5', juice: '#d81e3c', kind: 'fruit', tex: 'soft' },
+  { id: 'kiwi',        e: '🥝', flesh: '#cfe88a', juice: '#8cc43f', kind: 'fruit', tex: 'soft' },
+
+  { id: 'carrot',      e: '🥕', flesh: '#ffb057', juice: '#ff8a1f', kind: 'veg', tex: 'crisp' },
+  { id: 'cucumber',    e: '🥒', flesh: '#e2f4b8', juice: '#9fd45f', kind: 'veg', tex: 'crisp' },
+  { id: 'tomato',      e: '🍅', flesh: '#ff8e7a', juice: '#ef3b2d', kind: 'veg', tex: 'juicy' },
+  { id: 'broccoli',    e: '🥦', flesh: '#d8eeb0', juice: '#7fc24e', kind: 'veg', tex: 'crisp' },
+  { id: 'corn',        e: '🌽', flesh: '#fff0a0', juice: '#ffd23f', kind: 'veg', tex: 'crisp' },
+  { id: 'bell pepper', e: '🫑', flesh: '#d6efa8', juice: '#6fb53c', kind: 'veg', tex: 'crisp' },
+  { id: 'potato',      e: '🥔', flesh: '#fbeec2', juice: '#e8d08a', kind: 'veg', tex: 'crisp' },
+  { id: 'onion',       e: '🧅', flesh: '#fbf1e4', juice: '#e9cfae', kind: 'veg', tex: 'crisp' },
+  { id: 'avocado',     e: '🥑', flesh: '#e6f0a0', juice: '#a9c94f', kind: 'veg', tex: 'soft' },
+  { id: 'eggplant',    e: '🍆', flesh: '#f3efd6', juice: '#8a5bb0', kind: 'veg', tex: 'soft' },
+  { id: 'lettuce',     e: '🥬', flesh: '#e4f5c0', juice: '#8fcf5a', kind: 'veg', tex: 'crisp' },
+  { id: 'garlic',      e: '🧄', flesh: '#fffaf0', juice: '#efe6d2', kind: 'veg', tex: 'crisp' },
+
+  { id: 'egg',         e: '🥚', flesh: '#fff3b0', juice: '#ffd23f', kind: 'protein', pour: 'crack' },
+  { id: 'chicken',     e: '🍗', flesh: '#fbe9d2', juice: '#e9c79a', kind: 'protein', tex: 'soft' },
+  { id: 'steak',       e: '🥩', flesh: '#f08a8a', juice: '#c8434b', kind: 'protein', tex: 'soft' },
+  { id: 'bacon',       e: '🥓', flesh: '#f6a48c', juice: '#d9624a', kind: 'protein', tex: 'crisp' },
+  { id: 'fish',        e: '🐟', flesh: '#ffd9c7', juice: '#8fc7e8', kind: 'protein', tex: 'soft' },
+  { id: 'shrimp',      e: '🍤', flesh: '#fff0e0', juice: '#f3b06a', kind: 'protein', tex: 'crisp' },
+  { id: 'cheese',      e: '🧀', flesh: '#ffe07a', juice: '#ffc93f', kind: 'protein', tex: 'soft' },
+
+  { id: 'bread',       e: '🍞', flesh: '#fff3dc', juice: '#e8c48f', kind: 'pantry', tex: 'soft' },
+  { id: 'butter',      e: '🧈', flesh: '#fff2a8', juice: '#ffe066', kind: 'pantry', tex: 'soft' },
+  { id: 'chocolate',   e: '🍫', flesh: '#8a5a3c', juice: '#6b4028', kind: 'pantry', tex: 'crisp' },
+  { id: 'pancake mix', bag: '🥞', col: '#f6c453', flesh: '#fff3d6', juice: '#f7e3b0', kind: 'pantry', pour: 'powder' },
+  { id: 'flour',       bag: '🌾', col: '#e6d6b8', flesh: '#ffffff', juice: '#fbf6ea', kind: 'pantry', pour: 'powder' },
+  { id: 'rice',        e: '🍚', flesh: '#ffffff', juice: '#f7f4ec', kind: 'pantry', pour: 'powder' },
+  { id: 'milk',        e: '🥛', flesh: '#ffffff', juice: '#fbfbf6', kind: 'pantry', pour: 'liquid' },
+  { id: 'honey',       e: '🍯', flesh: '#ffd766', juice: '#f2a91e', kind: 'pantry', pour: 'liquid' },
+];
+const SHAKERS = [
+  { k: 'salt',   name: 'Salt',   verb: 'Shake the salt!',   c: '#eef3f8' },
+  { k: 'pepper', name: 'Pepper', verb: 'Shake the pepper!', c: '#3b2f2a' },
 ];
 const UTENSILS = [
   { k: 'spoon',   name: 'Spoon',   verb: 'Stir, stir, stir!' },
@@ -77,6 +119,9 @@ const L = {};
 let started = false, muted = false, idle = 0, now = 0;
 let pieces = [], particles = [], labels = [];
 let mix = 0, mixedDone = false, celebrate = null, groupSeq = 1;
+let pours = [], specks = [], batterR = 0, shelfVel = 0, shelfTarget = null;
+const bowlHas = () => pours.length > 0 || pieces.some(p => p.state === 'bowl');
+const emptyBowl = () => { pours = []; specks = []; mix = 0; mixedDone = false; };
 let hearts = 0;
 try { hearts = parseInt(localStorage.getItem('lmk-hearts') || '0', 10) || 0; } catch (_) {}
 const tools = {};
@@ -99,6 +144,18 @@ function makeSprite(e) {
   const o = mk(x1 - x0 + 1, y1 - y0 + 1);
   o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
   return o;
+}
+// A drawn bag with a picture on it, for foods that have no picture of their own.
+function makeBag(e, col) {
+  const c = mk(200, 256), g = c.getContext('2d');
+  g.fillStyle = col; rr(g, 14, 40, 172, 208, 18); g.fill();
+  g.fillStyle = 'rgba(90,50,20,0.14)'; rr(g, 14, 40, 172, 34, 14); g.fill();
+  g.fillStyle = col; rr(g, 30, 8, 140, 50, 12); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.35)'; rr(g, 30, 8, 140, 22, 10); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.25)'; rr(g, 24, 64, 14, 170, 7); g.fill();
+  g.fillStyle = '#fffaf3'; g.beginPath(); g.arc(100, 150, 62, 0, TAU); g.fill();
+  g.font = `84px ${EMO}`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, 100, 156);
+  return c;
 }
 const shadowCache = new WeakMap();
 function shadowOf(c) {
@@ -203,6 +260,12 @@ const SFX = {
   ding() { tone(1568, 1.2, { vol: 0.3 }); tone(3136, 0.7, { vol: 0.1 }); tone(2349, 0.9, { vol: 0.07 }); },
   yay() { [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.28, { vol: 0.2, delay: 0.25 + i * 0.11, type: 'triangle' })); tone(1568, 0.7, { vol: 0.1, delay: 0.7 }); },
   chime() { [784, 988, 1175].forEach((f, i) => tone(f, 0.32, { vol: 0.15, delay: i * 0.08 })); },
+  shake() { noise(0.06, { vol: 0.2, type: 'highpass', freq: 6200 }); noise(0.04, { vol: 0.12, type: 'highpass', freq: 8000, delay: 0.05 }); },
+  pour(kind) {
+    if (kind === 'crack') { noise(0.035, { vol: 0.4, type: 'highpass', freq: 3800 }); tone(260, 0.07, { f2: 140, vol: 0.3, type: 'triangle' }); tone(520, 0.14, { f2: 240, vol: 0.25, delay: 0.09 }); }
+    else if (kind === 'liquid') { noise(0.55, { vol: 0.16, freq: 650, f2: 1500, q: 1.6 }); for (let i = 0; i < 4; i++) { const f = rnd(320, 520); tone(f, 0.09, { f2: f * 1.6, vol: 0.16, delay: 0.05 + i * 0.12 }); } }
+    else { noise(0.45, { vol: 0.2, type: 'highpass', freq: 2800 }); tone(180, 0.1, { f2: 110, vol: 0.2, type: 'triangle', delay: 0.3 }); }
+  },
   poof() { noise(0.2, { vol: 0.14, freq: 1300, f2: 320, q: 0.8 }); },
   wash() {
     noise(0.75, { vol: 0.2, freq: 500, f2: 2600, q: 0.7 });
@@ -244,13 +307,20 @@ function layout() {
   L.S = Math.min(H * 0.2, W * 0.14);
   L.Ss = Math.min(W * 0.082, H * 0.14);
   L.plankY = L.wallH - 30 * U;
-  L.shelf = INGS.map((ing, i) => ({ ing, x: W * 0.07 + W * 0.86 * (i + 0.5) / INGS.length, y: L.plankY - L.Ss * 0.5 + 3 * U }));
+  // The shelf shows about nine and a half foods, so the half one hints that it slides.
+  L.shX0 = W * 0.085; L.shX1 = W * 0.915;
+  L.shSp = (L.shX1 - L.shX0) / 9.5;
+  L.shelf = INGS.map((ing, i) => ({ ing, x: L.shX0 + L.shSp * (i + 0.5), y: L.plankY - L.Ss * 0.5 + 3 * U }));
+  L.maxScroll = Math.max(0, L.shSp * INGS.length - (L.shX1 - L.shX0));
+  L.scroll = clamp(L.scroll || 0, 0, L.maxScroll);
+  L.btnPrev = { x: W * 0.043, y: L.plankY - L.Ss * 0.5, r: 24 * U };
+  L.btnNext = { x: W * 0.957, y: L.plankY - L.Ss * 0.5, r: 24 * U };
   L.board = { x: W * 0.115, y: H * 0.445, w: W * 0.36, h: H * 0.5 };
   const R = Math.min(W * 0.155, H * 0.262);
   L.bowl = { cx: W * 0.66, cy: H * 0.69, rx: R * 1.04, ry: R * 0.92 };
   L.uL = H * 0.34;
   L.tray = { x: W * 0.838, y: H * 0.415, w: W * 0.134, h: H * 0.405 };
-  L.bell = { x: W * 0.905, y: H * 0.905, r: H * 0.05 };
+  L.bell = { x: W * 0.95, y: H * 0.905, r: H * 0.05 };
   L.knife = { hl: H * 0.15, bl: H * 0.22 };
   L.btnSound = { x: W - 42 * U, y: 40 * U, r: 25 * U };
   L.btnWash = { x: W - 102 * U, y: 40 * U, r: 25 * U };
@@ -263,6 +333,7 @@ function layout() {
   const tcx = L.tray.x + L.tray.w / 2;
   UTENSILS.forEach((u, i) => { home(u.k, tcx + (i - 1) * W * 0.042, L.tray.y + 46 * U); Object.assign(tools[u.k], u); });
   tools.knife.name = 'Knife';
+  SHAKERS.forEach((u, i) => { home(u.k, W * (0.835 + i * 0.043), H * 0.905); Object.assign(tools[u.k], u, { shaker: true }); });
 
   for (const p of pieces) { p.x *= W / oW; p.y *= H / oH; if (p.tx !== undefined) { p.tx *= W / oW; p.ty *= H / oH; } }
   drawBG();
@@ -398,7 +469,17 @@ function confetti() {
   }
 }
 
+function pourIn(p) {
+  const ing = p.ing, b = L.bowl;
+  pours.push(ing); removePiece(p);
+  juice(clamp(p.x, b.cx - b.rx * 0.5, b.cx + b.rx * 0.5), clamp(p.y, b.cy - b.ry * 0.5, b.cy + b.ry * 0.5), ing, 16, 1.2);
+  SFX.pour(ing.pour);
+  const words = ing.pour === 'crack' ? `Crack the ${ing.id}!` : `Pour the ${ing.id}!`;
+  say(words); label(words.toLowerCase(), b.cx, b.cy - b.ry - 20 * U);
+  mix = Math.min(mix, 0.55); mixedDone = false;
+}
 function enterBowl(p) {
+  if (p.ing.pour) { pourIn(p); return; }
   p.state = 'bowl'; p.tsc = 0.72; p.vx = rnd(-2, 2) * U; p.vy = rnd(-2, 2) * U; p.vr = rnd(-0.08, 0.08); p.pop = 1;
   SFX.plop(); juice(p.x, p.y, p.ing, 4, 0.7);
   mix = Math.min(mix, 0.55); mixedDone = false;
@@ -428,7 +509,7 @@ function tryCut(t) {
   if (t.lastCut != null && Math.abs(bx - t.lastCut) < L.S * 0.16) return;
   let did = false;
   for (const p of pieces.slice()) {
-    if (p.state !== 'board') continue;
+    if (p.state !== 'board' || p.ing.pour) continue;
     const w = pW(p), h = pH(p);
     if (bx < p.x - w / 2 || bx > p.x + w / 2 || y1 < p.y - h / 2 || y0 > p.y + h / 2) continue;
     if (splitAt(p, bx)) did = true;
@@ -462,11 +543,11 @@ function stir(t, dx, dy) {
       if (dd < L.S * 0.22 && dd > 0.01) { p.vx += ex / dd * 1.2 * U; p.vy += ey / dd * 1.2 * U; }
     }
   }
-  if (!any) return;
+  if (!any && !pours.length) return;
   t.sd += d;
   if (t.sd > 62 * U) {
     t.sd = 0; SFX.stir(t.k);
-    if (Math.random() < 0.5) { const q = pieces.filter(p => p.state === 'bowl'); const p = q[(Math.random() * q.length) | 0]; juice(t.x, t.y, p.ing, 2, 0.6); }
+    if (Math.random() < 0.5) { const q = pieces.filter(p => p.state === 'bowl').map(p => p.ing).concat(pours); juice(t.x, t.y, q[(Math.random() * q.length) | 0], 2, 0.6); }
   }
   if (!t.saidVerb) { t.saidVerb = true; say(t.verb); label(t.verb.toLowerCase(), b.cx, b.cy - b.ry - 20 * U); }
   mix = Math.min(1, mix + d / (W * 4));
@@ -476,13 +557,31 @@ function stir(t, dx, dy) {
   }
 }
 
+function shake(t, dx, dy) {
+  t.sd += Math.hypot(dx, dy);
+  if (t.sd < 24 * U) return;
+  t.sd = 0; SFX.shake();
+  const b = L.bowl, ex = t.x + Math.sin(t.rot) * 32 * U, ey = t.y - Math.cos(t.rot) * 32 * U;
+  for (let i = 0; i < 4; i++) particles.push({ type: 'drop', x: ex + rnd(-5, 5) * U, y: ey, vx: rnd(-1, 1) * U, vy: rnd(1, 3) * U, r: rnd(1.6, 2.8) * U, c: t.c, t: 0, life: rnd(350, 550) });
+  if (inBowl(ex, ey + 30 * U, 0.85)) {
+    for (let i = 0; i < 3; i++) specks.push({ x: (ex - b.cx) / b.rx + rnd(-0.16, 0.16), y: (ey + 30 * U - b.cy) / b.ry + rnd(-0.16, 0.16), c: t.c });
+    if (specks.length > 180) specks.splice(0, specks.length - 180);
+  }
+  if (!t.saidVerb) { t.saidVerb = true; say(t.verb); label(t.verb.toLowerCase(), t.x, t.y - 80 * U); }
+}
+
 function dishName() {
-  const kinds = new Set(pieces.filter(p => p.state === 'bowl').map(p => p.ing.kind));
+  const inb = pieces.filter(p => p.state === 'bowl').map(p => p.ing).concat(pours);
+  const kinds = new Set(inb.map(i => i.kind)), has = id => inb.some(i => i.id === id);
+  if (has('pancake mix')) return kinds.has('fruit') ? 'fruit pancakes' : 'pancakes';
+  if (kinds.has('protein')) return 'tasty dinner';
+  if (has('milk') && kinds.has('fruit') && !kinds.has('veg')) return 'smoothie';
+  if (kinds.has('pantry')) return 'tasty snack';
   return kinds.size > 1 ? 'rainbow salad' : kinds.has('fruit') ? 'fruit salad' : 'veggie salad';
 }
 function ring() {
   bell.press = 1; SFX.ding();
-  if (celebrate || !pieces.some(p => p.state === 'bowl')) return;
+  if (celebrate || !bowlHas()) return;
   const name = dishName();
   celebrate = { t: 0, name, cleared: false };
   hearts++; try { localStorage.setItem('lmk-hearts', String(hearts)); } catch (_) {}
@@ -494,17 +593,18 @@ function wash() {
   SFX.wash(); say('All clean!');
   for (const p of pieces) { if (p.state !== 'drag' && p.state !== 'follow') { puff(p.x, p.y, 3); removePiece(p); } }
   for (let i = 0; i < 22; i++) particles.push({ type: 'bubble', x: rnd(W * 0.1, W * 0.85), y: rnd(H * 0.5, H * 0.95), vx: rnd(-0.6, 0.6) * U, vy: -rnd(1, 3) * U, r: rnd(6, 16) * U, c: '#fff', t: -rnd(250), life: rnd(700, 1300) });
-  mix = 0; mixedDone = false;
+  emptyBowl();
 }
 
 /* ───────────── Fingers ───────────── */
 const hitC = (c, x, y, f = 1.25) => Math.hypot(x - c.x, y - c.y) <= c.r * f;
 function toolHit(t, x, y) {
   if (t.k === 'knife') return Math.abs(x - t.x) < 34 * U && y > t.y - L.knife.hl / 2 - L.knife.bl - 8 * U && y < t.y + L.knife.hl / 2 + 12 * U;
+  if (t.shaker) return Math.abs(x - t.x) < 23 * U && Math.abs(y - t.y) < 46 * U;
   return Math.abs(x - t.x) < 24 * U && y > t.y - 40 * U && y < t.y + L.uL + 10 * U;
 }
 function holdTool(t, x, y) {
-  if (t.k === 'knife') { t.x = x; t.y = y - 8 * U; } else { t.x = x; t.y = y - 52 * U; }
+  if (t.k === 'knife') { t.x = x; t.y = y - 8 * U; } else if (t.shaker) { t.x = x; t.y = y - 40 * U; } else { t.x = x; t.y = y - 52 * U; }
 }
 function pickPiece(x, y) {
   let best = null, bd = 1e9;
@@ -527,7 +627,9 @@ function onDown(e) {
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
   if (hitC(L.btnSound, x, y)) { muted = !muted; if (muted) { try { speechSynthesis.cancel(); } catch (_) {} } else SFX.pop(); return; }
   if (hitC(L.btnWash, x, y)) { wash(); return; }
-  if (hitC(L.bell, x, y, 1.5)) { ring(); return; }
+  if (hitC(L.bell, x, y, 1.3)) { ring(); return; }
+  if (hitC(L.btnNext, x, y, 1.4)) { pageShelf(1); return; }
+  if (hitC(L.btnPrev, x, y, 1.4)) { pageShelf(-1); return; }
 
   for (const k in tools) {
     const t = tools[k];
@@ -540,15 +642,26 @@ function onDown(e) {
     return;
   }
 
-  let p = pickPiece(x, y), spawn = false, from = p && p.state;
+  const p = pickPiece(x, y);
   if (!p) {
+    // The shelf: a sideways finger slides it, a downward finger takes the food, a tap sends the food to the board.
+    if (x < L.shX0 || x > L.shX1 || y < L.plankY - L.Ss * 1.5 || y > L.plankY + 18 * U) return;
     let bi = -1, bd = L.Ss * 0.75;
-    L.shelf.forEach((s, i) => { const d = Math.hypot(x - s.x, y - s.y); if (d < bd) { bd = d; bi = i; } });
-    if (bi < 0) return;
-    const s = L.shelf[bi]; shelfPop[bi] = 1;
-    p = newPiece(s.ing, 0, 1, s.x, s.y, groupSeq++); p.sc = L.Ss / L.S; pieces.push(p); spawn = true; from = 'shelf';
+    L.shelf.forEach((s, i) => { const d = Math.hypot(x - (s.x - L.scroll), y - s.y); if (d < bd) { bd = d; bi = i; } });
+    shelfVel = 0; shelfTarget = null;
+    if (bi >= 0) { shelfPop[bi] = 1; SFX.pop(); say(cap(L.shelf[bi].ing.id)); label(L.shelf[bi].ing.id, x, y - L.S * 0.8); }
+    ptrs.set(e.pointerId, { type: 'shelf', i: bi, x, y, x0: x, y0: y, t0: now, moved: false, mode: null, v: 0 });
+    return;
   }
-  const ptr = { type: 'piece', p, x, y, x0: x, y0: y, t0: now, moved: false, from, spawn, ox: p.x, oy: p.y, fol: [] };
+  grabPiece(e.pointerId, p, x, y, p.state, false);
+}
+function spawnFromShelf(i) {
+  const s = L.shelf[i], p = newPiece(s.ing, 0, 1, s.x - L.scroll, s.y, groupSeq++);
+  p.sc = L.Ss / L.S; pieces.push(p);
+  return p;
+}
+function grabPiece(id, p, x, y, from, spawn) {
+  const ptr = { type: 'piece', p, x, y, x0: x, y0: y, t0: now, moved: spawn, from, spawn, ox: p.x, oy: p.y, fol: [] };
   if (from === 'board') {
     for (const q of pieces) if (q !== p && q.group === p.group && q.state === 'board') {
       q.state = 'follow'; q.leader = p; q.fdx = q.x - p.x; q.fdy = q.y - p.y; q.ox = q.x; q.oy = q.y; ptr.fol.push(q);
@@ -556,8 +669,14 @@ function onDown(e) {
   }
   p.state = 'drag'; p.x = x; p.y = y - LIFT(); p.pop = 0.6;
   pieces.splice(pieces.indexOf(p), 1); pieces.push(p);
-  ptrs.set(e.pointerId, ptr);
-  SFX.pop(); say(cap(p.ing.id)); label(p.ing.id, x, y - L.S * 0.8);
+  ptrs.set(id, ptr);
+  if (!spawn) { SFX.pop(); say(cap(p.ing.id)); label(p.ing.id, x, y - L.S * 0.8); }
+}
+function pageShelf(dir) {
+  const page = L.shSp * 9, cur = shelfTarget == null ? L.scroll : shelfTarget;
+  let t = cur + dir * page;
+  if (dir > 0 && cur >= L.maxScroll - 2) t = 0; else if (dir < 0 && cur <= 2) t = L.maxScroll;
+  shelfTarget = clamp(t, 0, L.maxScroll); shelfVel = 0; SFX.pop();
 }
 
 function onMove(e) {
@@ -567,15 +686,26 @@ function onMove(e) {
   ptr.x = x; ptr.y = y;
   if (!ptr.moved && Math.hypot(x - ptr.x0, y - ptr.y0) > 10 * U) ptr.moved = true;
   if (ptr.type === 'piece') { ptr.p.x = x; ptr.p.y = y - LIFT(); return; }
+  if (ptr.type === 'shelf') {
+    // A finger that slid the shelf and then heads down to the counter wanted the food: put the shelf back and hand it over.
+    if (ptr.mode === 'scroll' && ptr.i >= 0 && y > L.plankY + 34 * U) { L.scroll = ptr.s0; grabPiece(e.pointerId, spawnFromShelf(ptr.i), x, y, 'shelf', true); return; }
+    if (ptr.mode === 'scroll') { L.scroll = clamp(L.scroll - dx, 0, L.maxScroll); ptr.v = clamp(ptr.v * 0.5 - dx * 0.5, -60 * U, 60 * U); ptr.tv = now; return; }
+    const mx = x - ptr.x0, my = y - ptr.y0;
+    if (Math.hypot(mx, my) < 10 * U) return;
+    if (ptr.i < 0 || Math.abs(mx) > Math.abs(my) * 2) { ptr.mode = 'scroll'; ptr.s0 = L.scroll; L.scroll = clamp(L.scroll - mx, 0, L.maxScroll); }
+    else grabPiece(e.pointerId, spawnFromShelf(ptr.i), x, y, 'shelf', true);
+    return;
+  }
   const t = ptr.t;
   holdTool(t, x, y); t.vs += (dx - t.vs) * 0.4;
-  if (t.k === 'knife') tryCut(t); else stir(t, dx, dy);
+  if (t.k === 'knife') tryCut(t); else if (t.shaker) shake(t, dx, dy); else stir(t, dx, dy);
 }
 
 function dropPiece(p, fol) {
   const all = [p, ...fol];
   if (inBowl(p.x, p.y, 1.06)) {
-    enterBowl(p); say('In the bowl!'); label('in the bowl!', L.bowl.cx, L.bowl.cy - L.bowl.ry - 20 * U);
+    const pour = p.ing.pour; enterBowl(p);
+    if (!pour) { say('In the bowl!'); label('in the bowl!', L.bowl.cx, L.bowl.cy - L.bowl.ry - 20 * U); }
     fol.forEach((q, i) => settle(q, L.bowl.cx + rnd(-0.4, 0.4) * L.bowl.rx, L.bowl.cy + rnd(-0.4, 0.4) * L.bowl.ry, 'bowl', (i + 1) * 70));
   } else if (p.y < L.wallH - 6 * U) {
     for (const q of all) { puff(q.x, q.y, 4); removePiece(q); }
@@ -594,6 +724,13 @@ function onUp(e) {
     const t = ptr.t; t.held = false; t.vs = 0; if (tap) t.wig = 1;
     return;
   }
+  if (ptr.type === 'shelf') {
+    if (ptr.mode === 'scroll') { shelfVel = now - (ptr.tv || 0) < 80 ? ptr.v : 0; return; }
+    if (ptr.i < 0) return;
+    const q = spawnFromShelf(ptr.i), b = L.board, d = clampBoard(q, b.x + b.w * rnd(0.3, 0.7), b.y + b.h * rnd(0.3, 0.7));
+    settle(q, d.x, d.y, 'board');            // tap a food on the shelf: it hops to the board
+    return;
+  }
   const p = ptr.p;
   if (tap) {
     if (ptr.spawn) {                       // tap a food on the shelf: it hops to the board
@@ -602,7 +739,8 @@ function onUp(e) {
     } else if (ptr.from === 'board') {     // tap a food on the board: the knife chops it there
       p.state = 'board'; p.x = ptr.ox; p.y = ptr.oy;
       for (const q of ptr.fol) { q.state = 'board'; q.x = q.ox; q.y = q.oy; }
-      autoChop(p, ptr.x0);
+      if (p.ing.pour) settle(p, L.bowl.cx + rnd(-0.2, 0.2) * L.bowl.rx, L.bowl.cy + rnd(-0.2, 0.2) * L.bowl.ry, 'bowl');   // nothing to cut: it goes in the bowl
+      else autoChop(p, ptr.x0);
     } else { p.state = 'bowl'; p.x = ptr.ox; p.y = ptr.oy; }
     return;
   }
@@ -622,7 +760,8 @@ window.addEventListener('orientationchange', () => setTimeout(layout, 250));
 function hintTarget() {
   if (!started || idle < 5000 || celebrate) return null;
   let whole = false, cut = false, bowl = false;
-  for (const p of pieces) { if (p.state === 'board') { if (isWhole(p)) whole = true; else cut = true; } else if (p.state === 'bowl') bowl = true; }
+  for (const p of pieces) { if (p.state === 'board') { if (isWhole(p) && !p.ing.pour) whole = true; else cut = true; } else if (p.state === 'bowl') bowl = true; }
+  if (pours.length) bowl = true;
   if (bowl && mixedDone) return 'bell';
   if (whole) return 'knife';
   if (cut) return 'bowl';
@@ -635,12 +774,15 @@ function update(dt) {
   idle += dt;
   for (let i = 0; i < shelfPop.length; i++) shelfPop[i] *= Math.pow(0.86, f);
   bell.press *= Math.pow(0.9, f);
+  if (shelfTarget != null) { L.scroll += (shelfTarget - L.scroll) * (1 - Math.pow(0.8, f)); if (Math.abs(shelfTarget - L.scroll) < 1) { L.scroll = shelfTarget; shelfTarget = null; } }
+  else if (shelfVel) { L.scroll = clamp(L.scroll + shelfVel * f, 0, L.maxScroll); shelfVel *= Math.pow(0.94, f); if (Math.abs(shelfVel) < 0.2 || L.scroll <= 0 || L.scroll >= L.maxScroll) shelfVel = 0; }
+  batterR += ((pours.length ? Math.min(0.8, 0.42 + 0.09 * pours.length) : 0) - batterR) * (1 - Math.pow(0.85, f));
 
   for (const k in tools) {
     const t = tools[k];
     t.chop *= Math.pow(0.8, f); t.wig *= Math.pow(0.93, f);
     if (t.held) {
-      const target = t.k === 'knife' ? clamp(t.vs * 0.006, -0.12, 0.12) : 0.2 + clamp(t.vs * 0.012, -0.35, 0.35);
+      const target = t.k === 'knife' ? clamp(t.vs * 0.006, -0.12, 0.12) : t.shaker ? 2.5 + clamp(t.vs * 0.02, -0.4, 0.4) : 0.2 + clamp(t.vs * 0.012, -0.35, 0.35);
       t.rot += (target - t.rot) * 0.3 * f; t.vs *= Math.pow(0.85, f);
     } else if (t.auto > 0) { t.auto -= dt; }
     else { const a = 1 - Math.pow(0.72, f); t.x += (t.hx - t.x) * a; t.y += (t.hy - t.y) * a; t.rot += (0 - t.rot) * a; }
@@ -690,7 +832,7 @@ function update(dt) {
 
   if (celebrate) {
     celebrate.t += dt;
-    if (celebrate.t > 2900 && !celebrate.cleared) { celebrate.cleared = true; for (const p of pieces) if (p.state === 'bowl') removePiece(p); mix = 0; mixedDone = false; }
+    if (celebrate.t > 2900 && !celebrate.cleared) { celebrate.cleared = true; for (const p of pieces) if (p.state === 'bowl') removePiece(p); emptyBowl(); }
     if (celebrate.t > 3400) celebrate = null;
   }
   if (pieces.some(p => p.state === 'gone')) pieces = pieces.filter(p => p.state !== 'gone');
@@ -741,6 +883,32 @@ function drawBowl(ox, hint) {
   ctx.strokeStyle = 'rgba(200,120,140,0.3)'; ctx.lineWidth = 2 * U;
   ctx.beginPath(); ctx.ellipse(cx, cy, b.rx * 0.87, b.ry * 0.87, 0, 0, TAU); ctx.stroke();
 }
+function drawBatter(ox) {
+  if (batterR < 0.02 || !pours.length) return;
+  let r = 0, g = 0, bl = 0;
+  for (const i of pours) { const n = parseInt(i.juice.slice(1), 16); r += n >> 16; g += (n >> 8) & 255; bl += n & 255; }
+  r = (r / pours.length) | 0; g = (g / pours.length) | 0; bl = (bl / pours.length) | 0;
+  const b = L.bowl, cx = b.cx + ox, wob = 1 + Math.sin(now * 0.004) * 0.012;
+  ctx.fillStyle = `rgb(${r},${g},${bl})`; ctx.beginPath(); ctx.ellipse(cx, b.cy, b.rx * batterR * wob, b.ry * batterR / wob, 0, 0, TAU); ctx.fill();
+  ctx.strokeStyle = 'rgba(150,110,90,0.22)'; ctx.lineWidth = 2 * U; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.beginPath(); ctx.ellipse(cx - b.rx * batterR * 0.35, b.cy - b.ry * batterR * 0.4, b.rx * batterR * 0.28, b.ry * batterR * 0.14, -0.4, 0, TAU); ctx.fill();
+}
+function drawSpecks(ox) {
+  const b = L.bowl;
+  for (const q of specks) {
+    const n = Math.hypot(q.x, q.y), k = n > 0.78 ? 0.78 / n : 1;
+    ctx.fillStyle = q.c; ctx.beginPath(); ctx.arc(b.cx + ox + q.x * k * b.rx, b.cy + q.y * k * b.ry, 2.2 * U, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(120,120,130,0.45)'; ctx.lineWidth = 0.8 * U; ctx.stroke();
+  }
+}
+function arrowBtn(c, dir) {
+  ctx.fillStyle = 'rgba(120,60,70,0.15)'; ctx.beginPath(); ctx.arc(c.x + 1 * U, c.y + 3 * U, c.r, 0, TAU); ctx.fill();
+  ctx.fillStyle = '#fffaf7'; ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, TAU); ctx.fill();
+  ctx.strokeStyle = '#f7b9c9'; ctx.lineWidth = 2.5 * U; ctx.stroke();
+  const a = c.r * 0.42;
+  ctx.fillStyle = '#ea6f99'; ctx.lineJoin = 'round'; ctx.beginPath();
+  ctx.moveTo(c.x + dir * a, c.y); ctx.lineTo(c.x - dir * a * 0.7, c.y - a); ctx.lineTo(c.x - dir * a * 0.7, c.y + a); ctx.closePath(); ctx.fill();
+}
 function drawJuice(ox) {
   if (mix <= 0.02) return;
   const inb = pieces.filter(p => p.state === 'bowl'); if (!inb.length) return;
@@ -785,6 +953,21 @@ function drawTool(t, hint) {
     ctx.shadowColor = 'transparent';
     ctx.fillStyle = 'rgba(150,90,40,0.35)'; ctx.beginPath(); ctx.ellipse(0, 0, 15 * u, 21 * u, 0, 0, TAU); ctx.fill();
     ctx.fillStyle = 'rgba(255,235,205,0.5)'; ctx.beginPath(); ctx.ellipse(-5 * u, -8 * u, 5 * u, 9 * u, 0.3, 0, TAU); ctx.fill();
+  } else if (t.shaker) {
+    const w = 34 * u, h = 64 * u, salt = t.k === 'salt';
+    gr = ctx.createLinearGradient(-w / 2, 0, w / 2, 0); gr.addColorStop(0, '#ffffff'); gr.addColorStop(1, '#e3eaf0');
+    ctx.fillStyle = gr; rr(ctx, -w / 2, -h / 2 + 10 * u, w, h - 10 * u, 9 * u); ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = 'rgba(140,165,185,0.7)'; ctx.lineWidth = 1.5 * u; ctx.stroke();
+    ctx.fillStyle = salt ? '#f3f6f9' : '#5a4a42'; rr(ctx, -w / 2 + 4 * u, -h / 2 + 24 * u, w - 8 * u, h - 28 * u, 6 * u); ctx.fill();
+    if (salt) { ctx.strokeStyle = 'rgba(160,180,200,0.6)'; ctx.lineWidth = 1 * u; ctx.stroke(); }
+    gr = ctx.createLinearGradient(-w / 2, 0, w / 2, 0); gr.addColorStop(0, '#e6ebf0'); gr.addColorStop(0.5, '#c3cbd3'); gr.addColorStop(1, '#9aa5b0');
+    ctx.fillStyle = gr; rr(ctx, -w / 2 - 1 * u, -h / 2, w + 2 * u, 16 * u, 6 * u); ctx.fill();
+    ctx.fillStyle = '#6f7a85';
+    for (const hx of [-8, 0, 8]) { ctx.beginPath(); ctx.arc(hx * u, -h / 2 + 6 * u, 1.7 * u, 0, TAU); ctx.fill(); }
+    ctx.font = `800 ${20 * u}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = salt ? '#e2588a' : '#ffffff'; ctx.fillText(salt ? 'S' : 'P', 0, 10 * u);
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; rr(ctx, -w / 2 + 3 * u, -h / 2 + 20 * u, 4 * u, h - 30 * u, 2 * u); ctx.fill();
   } else if (t.k === 'whisk') {
     const hy = L.uL * 0.44;
     ctx.lineCap = 'round';
@@ -851,14 +1034,19 @@ function draw() {
   ctx.drawImage(bg, 0, 0, W, H);
   const hint = hintTarget(), ox = bowlOX();
 
-  // Shelf food.
+  // Shelf food: only the part of the row between the two arrows shows.
+  ctx.save(); ctx.beginPath(); ctx.rect(L.shX0, 0, L.shX1 - L.shX0, L.plankY + 8 * U); ctx.clip();
   L.shelf.forEach((s, i) => {
+    const x = s.x - L.scroll;
+    if (x < L.shX0 - L.shSp || x > L.shX1 + L.shSp) return;
     const sp = s.ing.sp, k = L.Ss / Math.max(sp.width, sp.height) * (1 + shelfPop[i] * 0.18);
     const bob = hint === 'shelf' ? Math.sin(now * 0.006 - i * 0.7) * 7 * U : Math.sin(now * 0.002 + i) * 1.2 * U;
     const w = sp.width * k, h = sp.height * k, by = L.plankY + 2 * U;
-    ctx.fillStyle = 'rgba(90,50,30,0.2)'; ctx.beginPath(); ctx.ellipse(s.x, by, w * 0.4, 4 * U, 0, 0, TAU); ctx.fill();
-    ctx.drawImage(sp, s.x - w / 2, by - h + bob - 1 * U, w, h);
+    ctx.fillStyle = 'rgba(90,50,30,0.2)'; ctx.beginPath(); ctx.ellipse(x, by, w * 0.4, 4 * U, 0, 0, TAU); ctx.fill();
+    ctx.drawImage(sp, x - w / 2, by - h + bob - 1 * U, w, h);
   });
+  ctx.restore();
+  if (L.maxScroll > 0) { arrowBtn(L.btnPrev, -1); arrowBtn(L.btnNext, 1); }
 
   // Hearts for finished dishes.
   if (hearts > 0) {
@@ -875,12 +1063,14 @@ function draw() {
   for (const p of board) drawPiece(p);
 
   drawBowl(ox, hint === 'bowl');
+  drawBatter(ox);
   drawJuice(ox);
   for (const p of bowl) drawPiece(p, ox);
+  drawSpecks(ox);
 
   drawBell(hint === 'bell');
   const heldTools = [];
-  for (const k in tools) { const t = tools[k]; if (t.held || t.auto > 0) heldTools.push(t); else drawTool(t, k === 'knife' ? hint === 'knife' : hint === 'utensils'); }
+  for (const k in tools) { const t = tools[k]; if (t.held || t.auto > 0) heldTools.push(t); else drawTool(t, k === 'knife' ? hint === 'knife' : !t.shaker && hint === 'utensils'); }
   for (const p of up) drawPiece(p);
   for (const t of heldTools) drawTool(t, false);
 
@@ -937,10 +1127,10 @@ function frame(t) {
   requestAnimationFrame(frame);
 }
 
-for (const ing of INGS) { ing.sp = makeSprite(ing.e); shadowOf(ing.sp); }
+for (const ing of INGS) { ing.sp = ing.bag ? makeBag(ing.bag, ing.col) : makeSprite(ing.e); shadowOf(ing.sp); }
 layout();
 requestAnimationFrame(frame);
-window.__kitchen = { L, tools, get pieces() { return pieces; }, get mix() { return mix; }, get hearts() { return hearts; } };
+window.__kitchen = { L, tools, get pieces() { return pieces; }, get mix() { return mix; }, get hearts() { return hearts; }, get pours() { return pours; }, get specks() { return specks; } };
 })();
 </script>
 </body>
