@@ -117,6 +117,9 @@ function hexA(hex, a) {
 let W = 0, H = 0, U = 1, DPR = 1, bg = null;
 const L = {};
 let started = false, muted = false, idle = 0, now = 0;
+// The spoken words are separate from the kitchen sounds and start switched off. Each has its own button.
+let voiceOn = false;
+try { voiceOn = localStorage.getItem('lmk-voice') === '1'; } catch (_) {}
 let pieces = [], particles = [], labels = [];
 let mix = 0, mixedDone = false, celebrate = null, groupSeq = 1;
 let pours = [], specks = [], batterR = 0, shelfVel = 0, shelfTarget = null;
@@ -283,7 +286,7 @@ function pickVoice() {
 if ('speechSynthesis' in window) { pickVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch (_) {} }
 let sayTimer = 0;
 function say(text) {
-  if (muted || !('speechSynthesis' in window)) return;
+  if (!voiceOn || !('speechSynthesis' in window)) return;
   clearTimeout(sayTimer);
   try { speechSynthesis.cancel(); } catch (_) {}
   sayTimer = setTimeout(() => {
@@ -323,7 +326,8 @@ function layout() {
   L.bell = { x: W * 0.95, y: H * 0.905, r: H * 0.05 };
   L.knife = { hl: H * 0.15, bl: H * 0.22 };
   L.btnSound = { x: W - 42 * U, y: 40 * U, r: 25 * U };
-  L.btnWash = { x: W - 102 * U, y: 40 * U, r: 25 * U };
+  L.btnVoice = { x: W - 102 * U, y: 40 * U, r: 25 * U };
+  L.btnWash = { x: W - 162 * U, y: 40 * U, r: 25 * U };
 
   const home = (k, x, y) => {
     const t = tools[k] || (tools[k] = { k, x, y, rot: 0, vs: 0, held: false, auto: 0, chop: 0, wig: 0, sd: 0 });
@@ -625,7 +629,12 @@ function onDown(e) {
   unlockAudio();
   if (!started) { started = true; SFX.chime(); say("Let's cook!"); return; }
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
-  if (hitC(L.btnSound, x, y)) { muted = !muted; if (muted) { try { speechSynthesis.cancel(); } catch (_) {} } else SFX.pop(); return; }
+  if (hitC(L.btnSound, x, y)) { muted = !muted; if (!muted) SFX.pop(); return; }
+  if (hitC(L.btnVoice, x, y)) {
+    voiceOn = !voiceOn; try { localStorage.setItem('lmk-voice', voiceOn ? '1' : '0'); } catch (_) {}
+    SFX.pop(); if (voiceOn) say('Hello!'); else { clearTimeout(sayTimer); try { speechSynthesis.cancel(); } catch (_) {} }
+    return;
+  }
   if (hitC(L.btnWash, x, y)) { wash(); return; }
   if (hitC(L.bell, x, y, 1.3)) { ring(); return; }
   if (hitC(L.btnNext, x, y, 1.4)) { pageShelf(1); return; }
@@ -1018,7 +1027,8 @@ function roundBtn(c, emoji, off) {
   ctx.fillStyle = '#fffaf7'; ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, TAU); ctx.fill();
   ctx.strokeStyle = '#f7b9c9'; ctx.lineWidth = 2.5 * U; ctx.stroke();
   ctx.font = `${c.r * 1.0}px ${EMO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.globalAlpha = off ? 0.4 : 1; ctx.fillText(emoji, c.x, c.y + 2 * U); ctx.globalAlpha = 1;
+  ctx.globalAlpha = off ? 0.35 : 1; ctx.fillText(emoji, c.x, c.y + 2 * U); ctx.globalAlpha = 1;
+  if (off) { ctx.strokeStyle = '#ea6f99'; ctx.lineWidth = 4 * U; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(c.x - c.r * 0.55, c.y + c.r * 0.55); ctx.lineTo(c.x + c.r * 0.55, c.y - c.r * 0.55); ctx.stroke(); }
 }
 function heartPath(g, s) {
   g.beginPath(); g.moveTo(0, s * 0.9); g.bezierCurveTo(-s * 1.5, -s * 0.2, -s * 0.7, -s * 1.2, 0, -s * 0.4); g.bezierCurveTo(s * 0.7, -s * 1.2, s * 1.5, -s * 0.2, 0, s * 0.9); g.closePath();
@@ -1055,6 +1065,7 @@ function draw() {
     ctx.fillText(String(hearts), 56 * U, 41 * U);
   }
   roundBtn(L.btnSound, muted ? '🔇' : '🔊', false);
+  roundBtn(L.btnVoice, '🗣️', !voiceOn);
   roundBtn(L.btnWash, '🧽', false);
 
   const board = [], bowl = [], up = [];
@@ -1130,7 +1141,7 @@ function frame(t) {
 for (const ing of INGS) { ing.sp = ing.bag ? makeBag(ing.bag, ing.col) : makeSprite(ing.e); shadowOf(ing.sp); }
 layout();
 requestAnimationFrame(frame);
-window.__kitchen = { L, tools, get pieces() { return pieces; }, get mix() { return mix; }, get hearts() { return hearts; }, get pours() { return pours; }, get specks() { return specks; } };
+window.__kitchen = { L, tools, get pieces() { return pieces; }, get mix() { return mix; }, get hearts() { return hearts; }, get voiceOn() { return voiceOn; }, get muted() { return muted; }, get pours() { return pours; }, get specks() { return specks; } };
 })();
 </script>
 </body>
